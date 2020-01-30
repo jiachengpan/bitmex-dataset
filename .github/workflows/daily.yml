@@ -21,11 +21,6 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2.0.0
         
-      - name: download xbtusd
-        run: |
-          npm install
-          node download.js ${SYMBOL} -s ${DATE} -o ${SYMBOL}.trades.${DATE}.db -t 120
-
       - name: create release if not exists
         id: create_release
         uses: jiachengpan/create-release@check_exists
@@ -37,6 +32,11 @@ jobs:
           draft: false
           prerelease: false
           body: bitmex data ${{ env.MONTH }}
+
+      - name: download xbtusd
+        run: |
+          npm install
+          node download.js ${SYMBOL} -s ${DATE} -o ${SYMBOL}.trades.${DATE}.db -t 120
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1.0.1
