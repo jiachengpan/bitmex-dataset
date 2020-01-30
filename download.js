@@ -83,6 +83,9 @@ function get_trades(trades) {
   const trades = (args.agg) ? aggregate_trades(_.flatten(results)) : get_trades(_.flatten(results));
 
   const db = new sqlite3.Database(args.output);
+  db.run('PRAGMA journal_mode = WAL;');
+  db.run('PRAGMA synchronous = NORMAL');
+
   db.serialize(() => {
     db.run('create table if not exists trades (' +
            ' timestamp integer,' +
