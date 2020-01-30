@@ -16,9 +16,11 @@ jobs:
           echo "::set-env name=SYMBOL::XBTUSD"
           echo "::set-env name=DATE::$(date -d "yesterday 13:00" '+%Y-%m-%d')"
         shell: bash
+        
+      - name: checkout
+        uses: actions/checkout@v2.0.0
+        
       - name: download xbtusd
-        env: 
-          SYMBOL: XBTUSD
         run: |
           npm install
           node download.js ${SYMBOL} -s ${DATE} -o ${SYMBOL}.trades.${DATE}.db
