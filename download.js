@@ -14,7 +14,7 @@ const parser = new ArgumentParser({
 
 
 parser.addArgument(['-s', '--start'],     {defaultValue: undefined, help: 'start'});
-parser.addArgument(['-e', '--end'],       {defaultValue: undefined, help: 'start'});
+parser.addArgument(['-t', '--duration'],  {defaultValue: 3600, type: 'int', help: 'duration in seconds'});
 parser.addArgument(['--agg'],             {defaultValue: false, action: 'storeTrue', help: 'aggregate trades'});
 parser.addArgument(['-o', '--output'],    {defaultValue: 'trades.db', help: 'output file'});
 parser.addArgument('symbol',              {help: 'symbol. e.g. XBTUSD'});
@@ -23,8 +23,8 @@ const kDefaultDuration = 3600 * 1000; // 1hr
 
 const args = parser.parseArgs();
 
-const start_ts = (args.start) ? new Date(args.start).getTime() : new Date() - kDefaultDuration;
-const end_ts   = (args.end)   ? new Date(args.end).getTime() : new Date();
+const start_ts = (args.start) ? new Date(args.start).getTime() : new Date().getTime() - kDefaultDuration;
+const end_ts   = start_ts + args.duration * 1000;
 
 const exchange = new ccxt.bitmex({
   'enableRateLimit': true,
