@@ -3,6 +3,8 @@ name: daily
 on:
   schedule:
     - cron: '3 0 * * *'
+  push:
+    paths: '**'
 
 jobs:
   download:
