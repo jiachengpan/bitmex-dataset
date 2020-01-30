@@ -1,0 +1,33 @@
+{
+  "name": "bitmex-data",
+  "version": "1.0.0",
+  "description": "bitmex data -----------",
+  "main": "download.js",
+  "dependencies": {
+    "argparse": "^1.0.10",
+    "await-to-js": "^2.1.1",
+    "ccxt": "^1.22.8",
+    "lodash": "^4.17.15",
+    "sqlite3": "^4.1.1",
+    "util": "^0.12.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node download.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jiachengpan/bitmex-data.git"
+  },
+  "keywords": [
+    "bitmex",
+    "ccxt",
+    "dataset"
+  ],
+  "author": "Jiacheng Pan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jiachengpan/bitmex-data/issues"
+  },
+  "homepage": "https://github.com/jiachengpan/bitmex-data#readme"
+}
