@@ -37,7 +37,7 @@ jobs:
       - name: download xbtusd
         run: |
           npm install
-          node download.js ${SYMBOL} -s ${DATE} -o ${SYMBOL}.trades.${DATE}.db -t 120
+          node download.js ${SYMBOL} -s ${DATE} -o ${SYMBOL}.trades.${DATE}.db -t $((3600 * 24))
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1.0.1
@@ -48,3 +48,4 @@ jobs:
           asset_path: ${{env.SYMBOL}}.trades.${{env.DATE}}.db
           asset_name: ${{env.SYMBOL}}.trades.${{env.DATE}}.db
           asset_content_type: application/x-sqlite3
+
