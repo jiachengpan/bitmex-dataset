@@ -1,0 +1,26 @@
+name: daily
+
+on:
+  schedule:
+    - cron: '3 0 * * *'
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: define variables
+        run: |
+          echo "::set-env name=SYMBOL::XBTUSD"
+          echo "::set-env name=DATE::$(date -d "yesterday 13:00" '+%Y-%m-%d')"
+        shell: bash
+      - name: download xbtusd
+        env: 
+          SYMBOL: XBTUSD
+        run: |
+          node download.js ${SYMBOL} -s ${DATE} -o ${SYMBOL}.trades.${DATE}.db
+      - name: upload artifact
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: ${{env.SYMBOL}}.trades.${{env.DATE}}.db
+          path: .
