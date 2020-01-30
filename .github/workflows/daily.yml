@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '3 0 * * *'
   push:
-    paths: '**'
+    paths: '**/daily.yml'
 
 jobs:
   download:
@@ -24,8 +24,16 @@ jobs:
         run: |
           npm install
           node download.js ${SYMBOL} -s ${DATE} -o ${SYMBOL}.trades.${DATE}.db
-      - name: upload artifact
-        uses: actions/upload-artifact@v1.0.0
+
+      - name: create release if not exists
+        id: create_release
+        uses: jiachengpan/create-release@check_exists
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: ${{env.SYMBOL}}.trades.${{env.DATE}}.db
-          path: .
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ${{env.SYMBOL}}.trades.${{env.DATE}}.db
+          asset_name: ${{env.SYMBOL}}.trades.${{env.DATE}}.db

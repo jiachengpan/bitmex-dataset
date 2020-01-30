@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '3 0 1 * *'
   push:
-    paths: '**'
+    paths: '**/monthly.yaml'
 
 jobs:
   create_release:
