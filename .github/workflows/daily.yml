@@ -15,6 +15,7 @@ jobs:
         run: |
           echo "::set-env name=SYMBOL::XBTUSD"
           echo "::set-env name=DATE::$(date -d "yesterday 13:00" '+%Y-%m-%d')"
+          echo "::set-env name=MONTH::$(date -d "yesterday 13:00" '+%Y-%m')"
         shell: bash
         
       - name: checkout
@@ -23,11 +24,19 @@ jobs:
       - name: download xbtusd
         run: |
           npm install
-          node download.js ${SYMBOL} -s ${DATE} -o ${SYMBOL}.trades.${DATE}.db
+          node download.js ${SYMBOL} -s ${DATE} -o ${SYMBOL}.trades.${DATE}.db -t 120
 
       - name: create release if not exists
         id: create_release
         uses: jiachengpan/create-release@check_exists
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ env.MONTH }}
+          draft: false
+          prerelease: false
+          body: bitmex data ${{ env.MONTH }}
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1.0.1
