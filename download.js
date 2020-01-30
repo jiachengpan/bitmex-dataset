@@ -50,7 +50,7 @@ function get_trades(trades) {
 }
 
 (async () => {
-  const count_per_fetch = 500;
+  const count_per_fetch = 1000;
 
   await exchange.loadMarkets();
   const data = await exchange.fetchMarkets();
@@ -81,7 +81,6 @@ function get_trades(trades) {
   }
 
   const trades = (args.agg) ? aggregate_trades(_.flatten(results)) : get_trades(_.flatten(results));
-  console.log(trades)
 
   const db = new sqlite3.Database(args.output);
   db.serialize(() => {
