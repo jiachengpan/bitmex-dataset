@@ -20,6 +20,7 @@ jobs:
         env: 
           SYMBOL: XBTUSD
         run: |
+          npm install
           node download.js ${SYMBOL} -s ${DATE} -o ${SYMBOL}.trades.${DATE}.db
       - name: upload artifact
         uses: actions/upload-artifact@v1.0.0
