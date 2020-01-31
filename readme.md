@@ -1,7 +1,7 @@
 BitMEX Trading Dataset
 ----------------------
 
-This repository hosts historical trading dataset from [BitMex](https://www.bitmex.com/).
+This repository hosts historical trading dataset from [BitMEX](https://www.bitmex.com/).
 See [releases](https://github.com/jiachengpan/bitmex-dataset/releases) for the data.
 
 All data are retrieved from [bucketed trades api](https://www.bitmex.com/api/explorer/#!/Trade/Trade_getBucketed) from BitMEX, stored in sqlite3 database on a daily basis. <br/>
