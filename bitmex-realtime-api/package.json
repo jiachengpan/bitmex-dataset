@@ -1,0 +1,68 @@
+{
+  "_from": "bitmex-realtime-api",
+  "_id": "bitmex-realtime-api@0.4.3",
+  "_inBundle": false,
+  "_integrity": "sha512-EZpYleepMUbMF/EQiLxzIFBQ2QQ+BzYYsFxfVcsoYjKJyN9TKpFMtBHJ5IEssfWHBhhOHdSmRhycm1ohW+TXYQ==",
+  "_location": "/bitmex-realtime-api",
+  "_phantomChildren": {
+    "ms": "2.1.2"
+  },
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "bitmex-realtime-api",
+    "name": "bitmex-realtime-api",
+    "escapedName": "bitmex-realtime-api",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/bitmex-realtime-api/-/bitmex-realtime-api-0.4.3.tgz",
+  "_shasum": "23ece057390498c63b0db5be4a750ded37b3a872",
+  "_spec": "bitmex-realtime-api",
+  "_where": "/home/jiacheng/bitmex-data",
+  "author": {
+    "name": "Samuel Reed",
+    "email": "samuel.trace.reed@gmail.com",
+    "url": "http://strml.net/"
+  },
+  "bugs": {
+    "url": "https://github.com/BitMEX/api-connectors/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "debug": "^4.1.1",
+    "eventemitter2": "^5.0.1",
+    "lodash": "^4.17.10",
+    "superagent": "^5.1.0",
+    "ws": "^7.2.0"
+  },
+  "deprecated": false,
+  "description": "A library for interacting with BitMEX's websocket API.",
+  "engines": {
+    "node": ">=4"
+  },
+  "homepage": "https://github.com/BitMEX/api-connectors#readme",
+  "keywords": [
+    "bitmex",
+    "bitcoin",
+    "websocket",
+    "api"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "bitmex-realtime-api",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BitMEX/api-connectors.git"
+  },
+  "scripts": {
+    "start": "node example",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.4.3"
+}
