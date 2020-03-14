@@ -3,6 +3,7 @@
 const {ArgumentParser} = require('argparse');
 const sqlite3 = require('sqlite3').verbose();
 const to   = require('await-to-js').default;
+const fs   = require('fs');
 const util = require('util');
 const ccxt = require('ccxt');
 const _ = require('lodash');
@@ -49,8 +50,43 @@ function get_trades(trades) {
   return _.map(trades, (t) => { return [t.timestamp, t.side, t.price, t.amount] });
 }
 
+function init_db(filename) {
+  const db = new sqlite3.Database(filename);
+  db.run('PRAGMA journal_mode = WAL;');
+  db.run('PRAGMA synchronous = NORMAL');
+
+  db.run('create table if not exists trades (' +
+         ' timestamp integer,' +
+         ' side      text,' +
+         ' price     real,' +
+         ' amount    integer,' +
+         ' primary key (timestamp, side, price)' +
+         ')');
+
+  return db;
+}
+
+function export_trades(db, raw_trades, agg) {
+  console.log('exporting');
+  const trades = agg ? aggregate_trades(_.flatten(raw_trades)) : get_trades(_.flatten(raw_trades));
+  db.serialize(() => {
+    const batches = _.chunk(trades, 1024);
+    for (let b = 0; b < batches.length; b++) {
+      const batch = batches[b];
+      const stmt = db.prepare('insert or replace into trades values (?,?,?,?)');
+      for (let i = 0; i < batch.length; i++) {
+        stmt.run(batch[i]);
+      }
+      stmt.finalize();
+    }
+  });
+}
+
+const db = init_db(args.output);
+
 (async () => {
   const count_per_fetch = 1000;
+  const count_per_export = 500;
 
   await exchange.loadMarkets();
   const data = await exchange.fetchMarkets();
@@ -61,7 +97,7 @@ function get_trades(trades) {
     }
   }
 
-  let results = [];
+  let trades = [];
   for (let start = 0;;) {
     const params = {'start': start};
     if (end_ts !== undefined) params['endTime'] = exchange.iso8601(end_ts);
@@ -73,38 +109,24 @@ function get_trades(trades) {
       return;
     }
 
-    results.push(data);
+    trades.push(data);
     data.length && console.log(data.length, _.last(data).datetime);
 
     if (data.length < count_per_fetch) break;
     start += data.length;
+
+    if (trades.length > count_per_export) {
+      export_trades(db, _.slice(trades, 0, count_per_export/2), args.agg);
+      trades = _.slice(trades, count_per_export/2);
+    }
   }
 
-  const trades = (args.agg) ? aggregate_trades(_.flatten(results)) : get_trades(_.flatten(results));
-
-  const db = new sqlite3.Database(args.output);
-  db.run('PRAGMA journal_mode = WAL;');
-  db.run('PRAGMA synchronous = NORMAL');
-
-  db.serialize(() => {
-    db.run('create table if not exists trades (' +
-           ' timestamp integer,' +
-           ' side      text,' +
-           ' price     real,' +
-           ' amount    integer,' +
-           ' primary key (timestamp, side, price)' +
-           ')');
-
-    const batches = _.chunk(trades, 64);
-    for (let b = 0; b < batches.length; b++) {
-      const batch = batches[b];
-      const stmt = db.prepare('insert or replace into trades values (?,?,?,?)');
-      for (let i = 0; i < batch.length; i++) {
-        stmt.run(batch[i]);
-      }
-      stmt.finalize();
-    }
-  });
+  export_trades(db, trades, args.agg);
 
   db.close();
-})();
+})()
+.catch((err) => {
+  console.log(util.inspect(err));
+  fs.unlinkSync(args.output);
+  db.close();
+});

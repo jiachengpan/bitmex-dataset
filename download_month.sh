@@ -21,5 +21,9 @@ download_month() {
   done
 }
 
-download_month $@
+symbol=$1
+shift
+for month in $@; do
+  download_month $symbol $month
+done
 
