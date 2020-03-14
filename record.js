@@ -58,6 +58,7 @@ function init_db(filename) {
          ' timestamp integer,' +
          ' side      text,' +
          ' price     real,' +
+         ' size      integer,' +
          ' inc       integer,' +
          ' dec       integer,' +
          ' trade     integer,' +
@@ -70,10 +71,10 @@ function init_db(filename) {
 function export_data(db, ts, orderflow) {
   const timestamp = ts.unix();
   db.serialize(() => {
-    const stmt = db.prepare('insert or replace into orderflow values (?,?,?,?,?,?)');
+    const stmt = db.prepare('insert or replace into orderflow values (?,?,?,?,?,?,?)');
     for (let i = 0; i < orderflow.length; ++i) {
       const d = orderflow[i];
-      stmt.run(timestamp, d.side, d.price, d.inc, d.dec, d.trade);
+      stmt.run(timestamp, d.side, d.price, d.size, d.inc, d.dec, d.trade);
     }
     stmt.finalize();
   });
@@ -121,11 +122,25 @@ g_client.addStream(symbol, 'orderBookL2', function (newData, symbol, table, acti
     }
   }
 
+
   if (now.diff(g_last_tick, 'seconds') > k_interval) {
     if (g_db_last_date.day() != now.day()) {
       g_db = init_db(args.output);
     }
-    export_data(g_db, g_last_tick, _.values(g_order_flow));
+
+    const orderflow_records = _.values(g_order_flow);
+    const prices = _.map(orderflow_records, 'price');
+    const max_price = _.max(prices);
+    const min_price = _.min(prices);
+
+    const orderbook_records = _.filter(newData, (o) => { return o.price <= max_price && o.price >= min_price; });
+    for (let i = 0; i < orderbook_records.length; ++i) {
+      const ob_record = orderbook_records[i];
+      const of_record = get_order_flow_record(ob_record.side, ob_record.price);
+      of_record.size = ob_record.size;
+    }
+
+    export_data(g_db, g_last_tick, orderflow_records);
     g_last_tick = now;
     g_order_flow = {};
   }
