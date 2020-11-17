@@ -12,9 +12,9 @@ jobs:
       - name: define variables
         id: define_variables
         run: |
-          echo "::set-env name=SYMBOL::XBTUSD"
-          echo "::set-env name=DATE::$(date -d "yesterday 13:00" '+%Y-%m-%d')"
-          echo "::set-env name=MONTH::$(date -d "yesterday 13:00" '+%Y-%m')"
+          echo "SYMBOL=XBTUSD" >> $GITHUB_ENV
+          echo "DATE=$(date -d "yesterday 13:00" '+%Y-%m-%d')" >> $GITHUB_ENV
+          echo "MONTH=$(date -d "yesterday 13:00" '+%Y-%m')" >> $GITHUB_ENV
         shell: bash
         
       - name: checkout
