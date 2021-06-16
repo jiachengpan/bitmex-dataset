@@ -7,13 +7,12 @@
     "argparse": "^1.0.10",
     "await-to-js": "^2.1.1",
     "bitmex-realtime-api": "^0.4.3",
-    "ccxt": "^1.22.8",
+    "ccxt": "^1.51.49",
     "lodash": "^4.17.21",
     "moment": "^2.24.0",
     "sqlite3": "^4.1.1",
     "util": "^0.12.1"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "node download.js"
   },
